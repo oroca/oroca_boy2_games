@@ -1,0 +1,38 @@
+# orocaboy2 boards
+#
+menu.device_variant=Variant
+menu.bootloader_version=Bootloader version
+menu.upload_method=Upload method
+
+
+orocaboy2.name=orocaboy2 board
+orocaboy2.upload.maximum_size=524288
+
+orocaboy2.upload.file_type=bin
+orocaboy2.upload.ram.maximum_size=32768
+orocaboy2.upload.flash.maximum_size=524288
+orocaboy2.upload.params.quiet=no
+
+orocaboy2.build.mcu=cortex-m4
+orocaboy2.build.f_cpu=180000000L
+orocaboy2.build.board=orocaboy2
+orocaboy2.build.core=arduino
+orocaboy2.build.common_flags=-mthumb -mfloat-abi=softfp -mfpu=fpv4-sp-d16 -fsingle-precision-constant -DSTM32F469xx
+
+orocaboy2.build.ldscript=bsp/ldscript/STM32F469NIHx_FLASH.ld
+orocaboy2.build.variant=orocaboy2
+orocaboy2.build.variant_system_lib=
+orocaboy2.build.extra_flags=
+
+
+orocaboy2.build.inc1=bsp
+orocaboy2.build.inc2=bsp/include
+orocaboy2.build.inc3=hw
+orocaboy2.build.inc4=
+orocaboy2.build.inc5=
+orocaboy2.build.inc6=
+orocaboy2.build.inc7=
+
+orocaboy2.menu.upload_method.UploadMethod=oracaboy2 gameloader
+orocaboy2.menu.upload_method.UploadMethod.upload.protocol=orocaboy2_gameloader
+orocaboy2.menu.upload_method.UploadMethod.upload.tool=orocaboy2_gameloader
