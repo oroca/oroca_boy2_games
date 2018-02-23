@@ -54,7 +54,8 @@ extern "C" {
 extern void __libc_init_array(void);
 };
 
-void test2(void)
+
+extern "C" void startup(void)
 {
   volatile unsigned long *pulSrc, *pulDest;
 
@@ -75,8 +76,8 @@ void test2(void)
     *(pulDest++) = 0;
   }
 
-  //p_game_hw = *p_game_hw_addr;
-  p_game_hw = &p_game_api->game_hw;
+
+  p_game_hw = p_game_api->p_game_hw;
 
 
 
@@ -93,9 +94,4 @@ void test2(void)
   // Call the application's entry point.
   //
   main();
-}
-
-extern "C" void startup(void)
-{
-  test2();
 }

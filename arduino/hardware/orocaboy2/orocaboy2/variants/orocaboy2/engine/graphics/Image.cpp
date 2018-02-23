@@ -52,13 +52,14 @@ void Frame_Handler::allocateBuffer() {
 	if (buf && (bytes <= bufferSize)) {
 		img->_buffer = buf;
 		return;
-	}
+	}  
 	if (buf && (uint32_t)buf >= 0x20000000) {
 		//free(buf);
-	  p_game_hw->memFree(buf);
-	}
+	  memFree(buf);
+	}  
+
 	//if ((buf = (uint16_t *)malloc(bytes))) {  
-	if ((buf = (uint16_t *)p_game_hw->memMalloc(bytes))) {
+	if ((buf = (uint16_t *)memMalloc(bytes))) {
 		memset(buf, 0, bytes);
 		bufferSize = bytes;
 	} else {

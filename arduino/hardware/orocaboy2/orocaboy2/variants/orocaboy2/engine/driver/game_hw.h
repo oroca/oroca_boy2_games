@@ -30,7 +30,9 @@ typedef struct
 
 typedef struct
 {
-  game_hw_t game_hw;
+  game_hw_t *p_game_hw;
+  uint32_t   game_hw_addr;
+  uint32_t   debug;
 } game_api_t;
 
 extern game_hw_t  *p_game_hw;
