@@ -19,7 +19,7 @@
 #include "Arduino.h"
 
 
-
+#if 0
 uint32_t micros( void )
 {
 	return p_game_hw->micros();
@@ -47,4 +47,4 @@ void delayMicroseconds(uint32_t usec)
 
   while( (micros()-tTime) < usec );
 }
-
+#endif

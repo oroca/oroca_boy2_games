@@ -13,7 +13,7 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <stdbool.h>
-#include <variants/orocaboy2/hw/def_err.h>
+#include "def_err.h"
 
 #include "binary.h"
 

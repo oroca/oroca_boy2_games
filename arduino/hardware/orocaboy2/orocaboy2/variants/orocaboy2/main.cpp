@@ -11,27 +11,25 @@
 
 
 
-game_hw_t  *p_game_hw;
-game_api_t *p_game_api = (game_api_t *)0x2004FC00;
 
 
 void setup(void);
 void loop(void);
 
-
-
-int main(void)
+int main_boy(void)
 {
   setup();
-
+  
   while (1)
   {
     loop();
-    if (p_game_hw->checkGameStopFlag() == true)
+    if (buttonGetPressed(0) == true && buttonGetPressedTime(0) > 50)
     {
+      while(buttonGetPressed(0));
       break;
-    }
+    } 
   }
+  ledOff(1);
 }
 
 
@@ -51,7 +49,7 @@ extern unsigned long _ebss;			/* end address for the .bss section. defined in
 
 
 extern "C" {
-extern void __libc_init_array(void);
+static void __libc_init_array_boy(void);
 };
 
 
@@ -77,21 +75,47 @@ extern "C" void startup(void)
   }
 
 
-  p_game_hw = p_game_api->p_game_hw;
-
-
-
-  __libc_init_array();
+  __libc_init_array_boy();
   
-  for (int i=0; i<10; i++)
+  while(buttonGetPressed(0));
+
+  for (int i=0; i<3; i++)
   {
-    p_game_hw->ledToggle(1);
+    ledToggle(1);
     delay(50);
   }
+  ledOn(1);
 
 
   //
   // Call the application's entry point.
   //
-  main();
+  main_boy();
+}
+
+
+
+extern void (*__preinit_array_start_boy []) (void) __attribute__((weak));
+extern void (*__preinit_array_end_boy []) (void) __attribute__((weak));
+extern void (*__init_array_start_boy []) (void) __attribute__((weak));
+extern void (*__init_array_end_boy []) (void) __attribute__((weak));
+
+extern "C" 
+{ 
+void _init();
+}
+
+static void __libc_init_array_boy() 
+{
+  size_t count, i;
+     
+  count = __preinit_array_end_boy - __preinit_array_start_boy;
+  for (i = 0; i < count; i++)
+    __preinit_array_start_boy[i]();
+    
+  _init();
+ 
+  count = __init_array_end_boy - __init_array_start_boy;
+  for (i = 0; i < count; i++)
+    __init_array_start_boy[i]();
 }

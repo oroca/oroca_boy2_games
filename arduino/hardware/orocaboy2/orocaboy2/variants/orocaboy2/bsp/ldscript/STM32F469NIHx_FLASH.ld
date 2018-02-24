@@ -98,16 +98,16 @@ SECTIONS
 
   .preinit_array     :
   {
-    PROVIDE_HIDDEN (__preinit_array_start = .);
+    PROVIDE_HIDDEN (__preinit_array_start_boy = .);
     KEEP (*(.preinit_array*))
-    PROVIDE_HIDDEN (__preinit_array_end = .);
+    PROVIDE_HIDDEN (__preinit_array_end_boy = .);
   } >FLASH
   .init_array :
   {
-    PROVIDE_HIDDEN (__init_array_start = .);
+    PROVIDE_HIDDEN (__init_array_start_boy = .);
     KEEP (*(SORT(.init_array.*)))
     KEEP (*(.init_array*))
-    PROVIDE_HIDDEN (__init_array_end = .);
+    PROVIDE_HIDDEN (__init_array_end_boy = .);
   } >FLASH
   .fini_array :
   {

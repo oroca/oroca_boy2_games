@@ -20,7 +20,7 @@ compiler.ar.flags=rcs
 compiler.objcopy.cmd=arm-none-eabi-objcopy 
 compiler.elf2hex.flags=-O binary
 compiler.elf2hex.cmd=arm-none-eabi-objcopy
-compiler.ldflags= -mfloat-abi=hard -mfpu=fpv4-sp-d16
+compiler.ldflags= -mfloat-abi=hard -mfpu=fpv4-sp-d16 
 compiler.size.cmd=arm-none-eabi-size
 compiler.define=-DARDUINO=
 
@@ -32,7 +32,7 @@ build.upload_flags=
 
 # These can be overridden in platform.local.txt
 compiler.c.extra_flags=
-compiler.c.elf.extra_flags="-L{build.variant.path}/ld"
+compiler.c.elf.extra_flags="-L{build.variant.path}/ld"  
 compiler.cpp.extra_flags=
 compiler.S.extra_flags=
 compiler.ar.extra_flags=
@@ -66,7 +66,7 @@ recipe.s.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.S.flags} -mcpu={b
 
 ## Create archives
 recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} {compiler.ar.extra_flags} "{archive_file_path}" "{object_file}" 
-recipe.c.combine.pattern= "{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mcpu={build.mcu} "-T{build.variant.path}/{build.ldscript}" "-Wl,-Map,{build.path}/{build.project_name}.map" {compiler.c.elf.extra_flags} -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -mfloat-abi=hard -mfpu=fpv4-sp-d16  --specs=nano.specs -u _printf_float -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-unresolved-symbols -Wl,--start-group {object_files} -Wl,--whole-archive "{build.path}/{archive_file}" -Wl,--no-whole-archive -Wl,--end-group
+recipe.c.combine.pattern= "{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mcpu={build.mcu} "-T{build.variant.path}/{build.ldscript}" "-Wl,-Map,{build.path}/{build.project_name}.map" {compiler.c.elf.extra_flags} -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -mfloat-abi=hard -mfpu=fpv4-sp-d16  --specs=nano.specs -u _printf_float -lm -lgcc -mthumb -nostartfiles  -Wl,--cref -Wl,--check-sections -Wl,--gc-sections  -Wl,--just-symbols={build.variant.path}/orocaboy2_app.elf -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-unresolved-symbols -Wl,--start-group {object_files} -Wl,--whole-archive "{build.path}/{archive_file}" -Wl,--no-whole-archive -Wl,--end-group
 
 ## Create eeprom
 recipe.objcopy.eep.pattern=
@@ -95,4 +95,34 @@ tools.orocaboy2_gameloader.upload.params.verbose=-d
 tools.orocaboy2_gameloader.upload.params.quiet=n
 tools.orocaboy2_gameloader.upload.pattern="{path}/{cmd}" {serial.port} 1000000 08180000  {build.path}/{build.project_name}.bin 1 
 
+
+
+tools.orocaboy2_boot.cmd=openocd
+tools.orocaboy2_boot.cmd.windows=openocd.exe
+tools.orocaboy2_boot.path={runtime.hardware.path}/tools/win
+tools.orocaboy2_boot.path.macosx={runtime.hardware.path}/tools/mac
+tools.orocaboy2_boot.path.linux={runtime.hardware.path}/tools/linux
+
+tools.orocaboy2_boot.erase.params.verbose=-v
+tools.orocaboy2_boot.erase.params.quiet=-q -q
+tools.orocaboy2_boot.erase.pattern=
+
+tools.orocaboy2_boot.bootloader.params.verbose=-v -v -v -v
+tools.orocaboy2_boot.bootloader.params.quiet=-q -q
+tools.orocaboy2_boot.bootloader.pattern="{path}/{cmd}" -s {path}/scripts  -f interface/stlink-v2-1.cfg -f target/stm32f4x.cfg -c "program {{{runtime.platform.path}/variants/orocaboy2/orocaboy2_boot.elf}}"  -c "reset run" -c shutdown
+
+
+tools.orocaboy2_app.cmd=orocaboy2_loader
+tools.orocaboy2_app.cmd.windows=orocaboy2_loader.exe
+tools.orocaboy2_app.path={runtime.hardware.path}/tools/win
+tools.orocaboy2_app.path.macosx={runtime.hardware.path}/tools/mac
+tools.orocaboy2_app.path.linux={runtime.hardware.path}/tools/linux
+
+tools.orocaboy2_app.erase.params.verbose=-v
+tools.orocaboy2_app.erase.params.quiet=-q -q
+tools.orocaboy2_app.erase.pattern=
+
+tools.orocaboy2_app.bootloader.params.verbose=-v -v -v -v
+tools.orocaboy2_app.bootloader.params.quiet=-q -q
+tools.orocaboy2_app.bootloader.pattern="{path}/{cmd}" {serial.port} 1000000 08020000 "{runtime.platform.path}/variants/orocaboy2/orocaboy2_app.bin" 1 1
 

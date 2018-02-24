@@ -1,4 +1,4 @@
-name=orocaboy2
+name=OROCABOY2
 version=1.0.0
 
 compiler.warning_flags=-Wall
@@ -20,7 +20,7 @@ compiler.ar.flags=rcs
 compiler.objcopy.cmd=arm-none-eabi-objcopy 
 compiler.elf2hex.flags=-O binary
 compiler.elf2hex.cmd=arm-none-eabi-objcopy
-compiler.ldflags= 
+compiler.ldflags= -mfloat-abi=hard -mfpu=fpv4-sp-d16
 compiler.size.cmd=arm-none-eabi-size
 compiler.define=-DARDUINO=
 
@@ -65,8 +65,8 @@ recipe.s.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.S.flags} -mcpu={b
 
 
 ## Create archives
-recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} {compiler.ar.extra_flags} "{archive_file_path}" "{object_file}"
-recipe.c.combine.pattern= "{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mcpu={build.mcu} "-T{build.variant.path}/{build.ldscript}" "-Wl,-Map,{build.path}/{build.project_name}.map" {compiler.c.elf.extra_flags} -o "{build.path}/{build.project_name}.elf" "-L{build.path}" --specs=nano.specs -u _printf_float -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-unresolved-symbols -Wl,--start-group {object_files} -Wl,--whole-archive "{build.path}/{archive_file}" -Wl,--no-whole-archive -Wl,--end-group
+recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} {compiler.ar.extra_flags} "{archive_file_path}" "{object_file}" 
+recipe.c.combine.pattern= "{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mcpu={build.mcu} "-T{build.variant.path}/{build.ldscript}" "-Wl,-Map,{build.path}/{build.project_name}.map" {compiler.c.elf.extra_flags} -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -mfloat-abi=hard -mfpu=fpv4-sp-d16  --specs=nano.specs -u _printf_float -lm -lgcc -mthumb -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-unresolved-symbols -Wl,--start-group {object_files} -Wl,--whole-archive "{build.path}/{archive_file}" -Wl,--no-whole-archive -Wl,--end-group
 
 ## Create eeprom
 recipe.objcopy.eep.pattern=
@@ -87,13 +87,12 @@ recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
 # -------------------
 tools.orocaboy2_gameloader.cmd=orocaboy2_gameloader
 tools.orocaboy2_gameloader.cmd.windows=orocaboy2_gameloader.exe
-tools.orocaboy2_gameloader.path={runtime.hardware.path}/tools
-tools.orocaboy2_gameloader.path.macosx={runtime.tools.orocaboy2.path}/mac
-tools.orocaboy2_gameloader.path.linux={runtime.tools.orocaboy2.path}/linux
+tools.orocaboy2_gameloader.path={runtime.hardware.path}/tools/win
+tools.orocaboy2_gameloader.path.macosx={runtime.hardware.path}/tools/mac
+tools.orocaboy2_gameloader.path.linux={runtime.hardware.path}/tools/linux
 
 tools.orocaboy2_gameloader.upload.params.verbose=-d
 tools.orocaboy2_gameloader.upload.params.quiet=n
-#tools.opencm_ld.upload.pattern="{path}/{cmd}" "{serial.port}" "115200" "{build.path}/{build.project_name}.bin" "1"
-tools.orocaboy2_gameloader.upload.pattern="{path}/{cmd}" "{serial.port}" "1000000" "{build.path}/{build.project_name}.bin" "arduino" 
-#tools.orocaboy2_gameloader.upload.pattern="d:\orocaboy2_gameloader.exe" "{serial.port}" "57600" "{build.path}/{build.project_name}.bin" "arduino" 
+tools.orocaboy2_gameloader.upload.pattern="{path}/{cmd}" {serial.port} 1000000 08180000  {build.path}/{build.project_name}.bin 1 
+
 

@@ -3,9 +3,6 @@
 
 
 
-#include "engine/driver/game_hw.h"
-
-
 
 #define DISPLAY_LCD_WIDTH           800
 #define DISPLAY_LCD_HEIGHT          480

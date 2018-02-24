@@ -22,26 +22,26 @@
 
 uint32_t micros( void )
 {
-	return p_game_api->micros();
+	return p_game_hw->micros();
 }
 
 uint32_t millis( void )
 {
-  return p_game_api->millis();
+  return p_game_hw->millis();
 }
 
 void delay( uint32_t dwMs )
 {
-  if (p_game_api->checkGameStopFlag()) return;
+  if (p_game_hw->checkGameStopFlag()) return;
 
-  p_game_api->delay(dwMs);
+  p_game_hw->delay(dwMs);
 }
 
 void delayMicroseconds(uint32_t usec)
 {
   uint32_t tTime;
 
-  if (p_game_api->checkGameStopFlag()) return;
+  if (p_game_hw->checkGameStopFlag()) return;
 
   tTime = micros();
 

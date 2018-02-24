@@ -16,15 +16,20 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
  /*
- *  Modified on: 2018. 02.22.
- *       Author: Kei
+ *  Modified on: 2016. 7.12.
+ *       Author: Baram, PBHP
  */
 #include "Arduino.h"
+
+
+
+err_code_t err_code = OK;
 
 
 
 
 bool cmIsExit(void)
 {
-  return p_game_api->checkGameStopFlag();
+  return p_game_hw->checkGameStopFlag();
 }
+

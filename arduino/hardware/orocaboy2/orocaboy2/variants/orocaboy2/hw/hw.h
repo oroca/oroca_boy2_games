@@ -16,8 +16,6 @@
 
 #include "def.h"
 
-#include "engine/driver/game_hw.h"
-#include "mem.h"
 
 #define PI              3.1415926535897932384626433832795
 #define HALF_PI         1.5707963267948966192313216916398

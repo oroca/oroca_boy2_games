@@ -76,7 +76,7 @@ defined in linker script */
   .type  Reset_Handler, %function
 
 Reset_Handler:  
-
+  bl  startup
 /* Copy the data segment initializers from flash to SRAM */  
   movs  r1, #0
   b  LoopCopyDataInit
@@ -132,15 +132,14 @@ Infinite_Loop:
 * 0x0000.0000.
 * 
 *******************************************************************************/
+
   .section  .startup,"a",%progbits
   .type  g_pfnVectors, %object
   .size  g_pfnVectors, .-g_pfnVectors 
 
-  
-g_pfnVectors:
 
+  g_pfnVectors:
   .word  startup
-
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/		
  

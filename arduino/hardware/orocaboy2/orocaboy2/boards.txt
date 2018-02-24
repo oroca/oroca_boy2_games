@@ -5,7 +5,24 @@ menu.bootloader_version=Bootloader version
 menu.upload_method=Upload method
 
 
-OROCABOY2.name=OROCABOY2
+
+OROCABOY2_Boot.bootloader.tool = orocaboy2_boot
+OROCABOY2_Boot.bootloader.file = 
+OROCABOY2_Boot.name=OROCABOY2 Boot
+OROCABOY2_Boot.upload.maximum_size=262144
+
+OROCABOY2_App.bootloader.tool = orocaboy2_app
+OROCABOY2_App.bootloader.file = 
+OROCABOY2_App.name=OROCABOY2 App
+OROCABOY2_App.upload.maximum_size=262144
+
+
+
+
+OROCABOY2.bootloader.tool = orocaboy2_boot
+OROCABOY2.bootloader.file = opencr_boot.bin
+
+OROCABOY2.name=OROCABOY2 Games
 OROCABOY2.upload.maximum_size=262144
 
 OROCABOY2.upload.file_type=bin
@@ -36,3 +53,4 @@ OROCABOY2.build.inc7=
 OROCABOY2.menu.upload_method.UploadMethod=OROCABOY2 GameLoader
 OROCABOY2.menu.upload_method.UploadMethod.upload.protocol=orocaboy2_gameloader
 OROCABOY2.menu.upload_method.UploadMethod.upload.tool=orocaboy2_gameloader
+

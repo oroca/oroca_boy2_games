@@ -28,8 +28,5 @@ err_code_t err_code = OK;
 
 
 
-bool cmIsExit(void)
-{
-  return p_game_hw->checkGameStopFlag();
-}
+
 

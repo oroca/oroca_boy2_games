@@ -78,6 +78,8 @@ typedef void (*voidFuncPtr)( void ) ;
 #include "WCharacter.h"
 #include "WString.h"
 #include "WMath.h"
+#include "HardwareSerial.h"
+#include "UARTClass.h"
 
 #include "variant.h"
 

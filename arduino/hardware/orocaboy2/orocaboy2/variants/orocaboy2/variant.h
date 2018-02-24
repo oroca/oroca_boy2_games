@@ -17,9 +17,22 @@
 
 
 
-extern game_hw_t game_hw;
-extern game_hw_t *p_game_hw;
-extern game_api_t *p_game_api;
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+void ledOn(uint8_t ch);
+void ledOff(uint8_t ch);
+void ledToggle(uint8_t ch);
+
+bool     buttonGetPressed(uint8_t ch);
+bool     buttonGetPressedEvent(uint8_t ch);
+uint32_t buttonGetPressedTime(uint8_t ch);
+bool     buttonGetReleased(uint8_t ch);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

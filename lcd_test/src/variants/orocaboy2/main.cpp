@@ -1,8 +1,8 @@
 /*
  *  main.h
  *
- *  Created on: 2018. 02.22.
- *       Author: Kei
+ *  Created on: 2016. 7. 17.
+ *      Author: Baram, PBHP
  */
 
 #include <stdio.h>
@@ -10,8 +10,9 @@
 #include "variant.h"
 
 
-game_api_t *p_game_api = (game_api_t *)0x2004FC00;
 
+game_hw_t  *p_game_hw;
+game_api_t *p_game_api = (game_api_t *)0x2004FC00;
 
 
 void setup(void);
@@ -26,32 +27,24 @@ int main(void)
   while (1)
   {
     loop();
-    if (p_game_api->checkGameStopFlag() == true)
+    //if (p_game_hw->checkGameStopFlag() == true)
     {
-      break;
+      //break;
     }
   }
 }
 
 
-__attribute__(( weak )) void setup(void)
+__attribute__((weak))  void setup()
 {
-
 }
 
-__attribute__(( weak )) void loop(void)
+__attribute__((weak))  void loop()
 {
-  static uint32_t pre_time;
-
-  if(p_game_api->millis() - pre_time >= 500)
-  {
-    pre_time = p_game_api->millis();
-    p_game_api->ledToggle(_DEF_LED3);
-  }
 }
 
 
-
+extern unsigned long _etext;
 extern unsigned long _sidata;		/* start address for the initialization values
                                    of the .data section. defined in linker script */
 extern unsigned long _sdata;		/* start address for the .data section. defined
@@ -67,11 +60,13 @@ extern unsigned long _ebss;			/* end address for the .bss section. defined in
 
 extern "C" {
 extern void __libc_init_array(void);
+static void __libc_init_array2();
 };
+
 
 extern "C" void startup(void)
 {
-  unsigned long *pulSrc, *pulDest;
+  volatile unsigned long *pulSrc, *pulDest;
 
   //
   // Copy the data segment initializers from flash to SRAM.
@@ -90,10 +85,55 @@ extern "C" void startup(void)
     *(pulDest++) = 0;
   }
 
-  __libc_init_array();
+
+  p_game_hw = p_game_api->p_game_hw;
+
+
+
+  //__libc_init_array();
+  __libc_init_array2();
+  
+  for (int i=0; i<10; i++)
+  {
+    p_game_hw->ledToggle(1);
+    delay(50);
+  }
+
 
   //
   // Call the application's entry point.
   //
   main();
+}
+
+extern "C"
+{
+
+extern void (*__preinit_array_start []) (void) __attribute__((weak));
+extern void (*__preinit_array_end []) (void) __attribute__((weak));
+extern void (*__init_array_start []) (void) __attribute__((weak));
+extern void (*__init_array_end []) (void) __attribute__((weak));
+extern void (*__fini_array_start []) (void) __attribute__((weak));
+extern void (*__fini_array_end []) (void) __attribute__((weak));
+
+void _init();
+void _fini();
+void _exit(int return_code) __attribute__((noreturn));
+
+
+static void __libc_init_array2()
+{
+  size_t count, i;
+
+  count = __preinit_array_end - __preinit_array_start;
+  for (i = 0; i < count; i++)
+       __preinit_array_start[i]();
+
+  _init();
+
+  count = __init_array_end - __init_array_start;
+  for (i = 0; i < count; i++)
+    __init_array_start[i]();
+}
+
 }
