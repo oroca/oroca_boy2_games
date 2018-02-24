@@ -1,0 +1,56 @@
+# orocaboy2
+#
+menu.device_variant=Variant
+menu.bootloader_version=Bootloader version
+menu.upload_method=Upload method
+
+
+
+OROCABOY2_Boot.bootloader.tool = orocaboy2_boot
+OROCABOY2_Boot.bootloader.file = 
+OROCABOY2_Boot.name=OROCABOY2 Boot
+OROCABOY2_Boot.upload.maximum_size=262144
+
+OROCABOY2_App.bootloader.tool = orocaboy2_app
+OROCABOY2_App.bootloader.file = 
+OROCABOY2_App.name=OROCABOY2 App
+OROCABOY2_App.upload.maximum_size=262144
+
+
+
+
+OROCABOY2.bootloader.tool = orocaboy2_boot
+OROCABOY2.bootloader.file = opencr_boot.bin
+
+OROCABOY2.name=OROCABOY2 Games
+OROCABOY2.upload.maximum_size=262144
+
+OROCABOY2.upload.file_type=bin
+OROCABOY2.upload.ram.maximum_size=32768
+OROCABOY2.upload.flash.maximum_size=262144
+OROCABOY2.upload.params.quiet=no
+
+OROCABOY2.build.mcu=cortex-m4
+OROCABOY2.build.f_cpu=180000000L
+OROCABOY2.build.board=OROCABOY2
+OROCABOY2.build.core=arduino
+OROCABOY2.build.common_flags=-mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant -DSTM32F469xx -DUSE_HAL_DRIVER -DOROCABOY
+
+OROCABOY2.build.ldscript=bsp/ldscript/STM32F469NIHx_FLASH.ld
+OROCABOY2.build.variant=orocaboy2
+OROCABOY2.build.variant_system_lib=
+OROCABOY2.build.extra_flags=
+
+
+OROCABOY2.build.inc1=bsp
+OROCABOY2.build.inc2=bsp/include
+OROCABOY2.build.inc3=hw
+OROCABOY2.build.inc4=engine
+OROCABOY2.build.inc5=
+OROCABOY2.build.inc6=
+OROCABOY2.build.inc7=
+
+OROCABOY2.menu.upload_method.UploadMethod=OROCABOY2 GameLoader
+OROCABOY2.menu.upload_method.UploadMethod.upload.protocol=orocaboy2_gameloader
+OROCABOY2.menu.upload_method.UploadMethod.upload.tool=orocaboy2_gameloader
+

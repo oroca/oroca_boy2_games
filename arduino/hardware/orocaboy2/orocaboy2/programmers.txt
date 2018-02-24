@@ -1,0 +1,17 @@
+orocaboy2_boot.name=OROCABOY2_BOOT
+orocaboy2_boot.communication=serial
+orocaboy2_boot.protocol=orocaboy2_boot
+orocaboy2_boot.program.protocol=orocaboy2_boot
+orocaboy2_boot.program.tool=orocaboy2_boot
+orocaboy2_boot.program.extra_params=-P{serial.port}
+
+
+orocaboy2_app.name=OROCABOY2_APP
+orocaboy2_app.communication=serial
+orocaboy2_app.protocol=orocaboy2_app
+orocaboy2_app.program.protocol=orocaboy2_app
+orocaboy2_app.program.tool=orocaboy2_app
+orocaboy2_app.program.extra_params=-P{serial.port}
+
+
+
