@@ -93,7 +93,7 @@ tools.orocaboy2_gameloader.path.linux={runtime.hardware.path}/tools/linux
 
 tools.orocaboy2_gameloader.upload.params.verbose=-d
 tools.orocaboy2_gameloader.upload.params.quiet=n
-tools.orocaboy2_gameloader.upload.pattern="{path}/{cmd}" {serial.port} 1000000 08180000  {build.path}/{build.project_name}.bin 1 
+tools.orocaboy2_gameloader.upload.pattern="{path}/{cmd}" {serial.port} 57600 08180000  {build.path}/{build.project_name}.bin 1 
 
 
 
