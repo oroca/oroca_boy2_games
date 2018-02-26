@@ -83,138 +83,139 @@ class Graphics : public Print {
 
 public:
 
-	Graphics(int16_t w, int16_t h); // Constructor
-	virtual ~Graphics();
+  Graphics(int16_t w, int16_t h); // Constructor
+  virtual ~Graphics();
 
-	// This MUST be defined by the subclass:
-	virtual void _drawPixel(int16_t x, int16_t y) = 0;
-	virtual void drawBufferedLine(int16_t x, int16_t y, uint16_t *buffer, uint16_t w, Image& img) = 0;
-
-
-	// These MAY be overridden by the subclass to provide device-specific
-	// optimized code.  Otherwise 'generic' versions are used.
-	virtual void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
-	virtual void drawFastVLine(int16_t x, int16_t y, int16_t h);
-	virtual void drawFastHLine(int16_t x, int16_t y, int16_t w);
-	virtual void drawRect(int16_t x, int16_t y, int16_t w, int16_t h);
-	virtual void fillRect(int16_t x, int16_t y, int16_t w, int16_t h);
-	virtual void _fill();
-	virtual void invertDisplay(boolean i);
-	virtual void drawImage(int16_t x, int16_t y, Image& img);
-	virtual void drawImage(int16_t x, int16_t y, Image& img, int16_t w2, int16_t h2);
-	virtual void drawBitmap(int8_t x, int8_t y, const uint8_t *bitmap);
-	virtual void drawBitmap(int8_t x, int8_t y, const uint8_t *bitmap, uint8_t rotation, uint8_t flip);
-
-	// These exist only with Graphics (no subclass overrides)
-	void drawPixel(int16_t x, int16_t y);
-	void drawPixel(int16_t x, int16_t y, Color c);
-	void drawPixel(int16_t x, int16_t y, ColorIndex c);
-	void fill();
-	void fill(Color color);
-	void fill(ColorIndex color);
-	void clearTextVars();
-	void clear();
-	void clear(Color bgcolor);
-	void clear(ColorIndex bgcolor);
-	
-	void drawCircle(int16_t x0, int16_t y0, int16_t r);
-	void drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername);
-	void fillCircle(int16_t x0, int16_t y0, int16_t r);
-	void fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta);
-	void drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2);
-	void fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2);
-	void drawRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius);
-	void fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius);
-
-	
-	virtual void drawChar(int16_t x, int16_t y, unsigned char c, uint8_t size);
-	Color setTmpColor(Color c);
-	Color setTmpColor(ColorIndex c);
-	void setColor(Color c);
-	void setColor(Color c, Color bg);
-	void setColor(ColorIndex c);
-	void setColor(ColorIndex c, ColorIndex bg);
-	void setColor(uint8_t c);
-	void setColor(uint8_t c, uint8_t bg);
-	void setTransparentColor(Color c);
-	void setTransparentColor(ColorIndex c);
-	void clearTransparentColor();
-	void setCursorX(int16_t x);
-	void setCursorY(int16_t y);
-	void setCursor(int16_t x, int16_t y);
-	void setCursors(int16_t x, int16_t y);
-	void setFontSize(uint8_t s);
-	void setTextWrap(bool w);
-	void setRotation(uint8_t r);
-	void cp437(bool x=true);
-	void setFont(const GFXfont *f = NULL); //adafruit custom font
-	void setFont(const uint8_t* f); //gamebuino legacy font
-	void getTextBounds(char *string, int16_t x, int16_t y, 	int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
+  // This MUST be defined by the subclass:
+  virtual void _drawPixel(int16_t x, int16_t y) = 0;
+  virtual void drawBufferedLine(int16_t x, int16_t y, uint16_t *buffer, uint16_t w, Image& img) = 0;
 
 
-	//Gamebuino legacy function
-	bool getBitmapPixel(const uint8_t* bitmap, uint8_t x, uint8_t y);
+  // These MAY be overridden by the subclass to provide device-specific
+  // optimized code.  Otherwise 'generic' versions are used.
+  virtual void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
+  virtual void drawFastVLine(int16_t x, int16_t y, int16_t h);
+  virtual void drawFastHLine(int16_t x, int16_t y, int16_t w);
+  virtual void drawRect(int16_t x, int16_t y, int16_t w, int16_t h);
+  virtual void fillRect(int16_t x, int16_t y, int16_t w, int16_t h);
+  virtual void _fill();
+  virtual void invertDisplay(boolean i);
+  virtual void drawImage(int16_t x, int16_t y, Image& img);
+  virtual void drawImage(int16_t x, int16_t y, Image& img, int16_t w2, int16_t h2);
+  virtual void drawImage(int16_t x, int16_t y, Image& img, int16_t x2, int16_t y2, int16_t w2, int16_t h2);
+  void drawImageCrop(int16_t x, int16_t y, int16_t w1, int16_t i2offset, int16_t w2cropped, int16_t j2offset, int16_t h2cropped, Image& img);
+  virtual void drawBitmap(int8_t x, int8_t y, const uint8_t *bitmap);
+  virtual void drawBitmap(int8_t x, int8_t y, const uint8_t *bitmap, uint8_t rotation, uint8_t flip);
+
+  // These exist only with Graphics (no subclass overrides)
+  void drawPixel(int16_t x, int16_t y);
+  void drawPixel(int16_t x, int16_t y, Color c);
+  void drawPixel(int16_t x, int16_t y, ColorIndex c);
+  void fill();
+  void fill(Color color);
+  void fill(ColorIndex color);
+  void clearTextVars();
+  void clear();
+  void clear(Color bgcolor);
+  void clear(ColorIndex bgcolor);
+
+  void drawCircle(int16_t x0, int16_t y0, int16_t r);
+  void drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername);
+  void fillCircle(int16_t x0, int16_t y0, int16_t r);
+  void fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta);
+  void drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2);
+  void fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2);
+  void drawRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius);
+  void fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius);
 
 
-	static void indexTo565(uint16_t *dest, uint8_t *src, Color *index, uint16_t length, bool skipFirst);
-	static ColorIndex rgb565ToIndex(Color rgb);
+  virtual void drawChar(int16_t x, int16_t y, unsigned char c, uint8_t size);
+  Color setTmpColor(Color c);
+  Color setTmpColor(ColorIndex c);
+  void setColor(Color c);
+  void setColor(Color c, Color bg);
+  void setColor(ColorIndex c);
+  void setColor(ColorIndex c, ColorIndex bg);
+  void setColor(uint8_t c);
+  void setColor(uint8_t c, uint8_t bg);
+  void setTransparentColor(Color c);
+  void setTransparentColor(ColorIndex c);
+  void clearTransparentColor();
+  void setCursorX(int16_t x);
+  void setCursorY(int16_t y);
+  void setCursor(int16_t x, int16_t y);
+  void setFontSize(uint8_t s);
+  void setTextWrap(bool w);
+  void setRotation(uint8_t r);
+  void cp437(bool x=true);
+  void setFont(const GFXfont *f = NULL); //adafruit custom font
+  void setFont(const uint8_t* f); //gamebuino legacy font
+  void getTextBounds(char *string, int16_t x, int16_t y,  int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
+  void getTextBounds(const __FlashStringHelper *s, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
 
-	union {
-		uint16_t transparentColor;
-		struct {
-			uint8_t transparentColorIndex;
-			bool useTransparentIndex;
-		};
-	};
-	static uint8_t alpha;
-	static uint16_t tint;
-	static BlendMode blendMode;
-	static Color *colorIndex;
-	ColorMode colorMode;
+  //Gamebuino legacy function
+  bool getBitmapPixel(const uint8_t* bitmap, uint8_t x, uint8_t y);
 
-	virtual size_t write(uint8_t);
 
-	int16_t height(void) const;
-	int16_t width(void) const;
+  static void indexTo565(uint16_t *dest, uint8_t *src, Color *index, uint16_t length, bool skipFirst);
+  static ColorIndex rgb565ToIndex(Color rgb);
 
-	uint8_t getRotation(void) const;
+  union {
+    uint16_t transparentColor;
+    struct {
+      uint8_t transparentColorIndex;
+      bool useTransparentIndex;
+    };
+  };
+  static uint8_t alpha;
+  static uint16_t tint;
+  static BlendMode blendMode;
+  static Color *colorIndex;
+  ColorMode colorMode;
 
-	// get current cursor position (get rotation safe maximum values, using: width() for x, height() for y)
-	int16_t getCursorX(void) const;
-	int16_t getCursorY(void) const;
-	uint8_t getFontWidth(void) const;
-	uint8_t getFontHeight(void) const;
+  virtual size_t write(uint8_t);
+
+  int16_t height(void) const;
+  int16_t width(void) const;
+
+  uint8_t getRotation(void) const;
+
+  // get current cursor position (get rotation safe maximum values, using: width() for x, height() for y)
+  int16_t getCursorX(void) const;
+  int16_t getCursorY(void) const;
+  uint8_t getFontWidth(void) const;
+  uint8_t getFontHeight(void) const;
 
  //protected:
-	const int16_t
-		WIDTH, HEIGHT;   // This is the 'raw' display w/h - never changes
-	int16_t
-		_width, _height; // Display w/h as modified by current rotation
-	static int16_t cursorX, cursorY;
-	static union ColorUnion {
-		Color c;
-		struct {
-			uint8_t iu;
-			uint8_t i;
-		};
-	} color;
-	static union BgcolorUnion {
-		Color c;
-		struct {
-			uint8_t iu;
-			uint8_t i;
-		};
-	} bgcolor;
-	static uint8_t
-		fontSize,
-		rotation;
-	static bool
-		textWrap,   // If set, 'wrap' text at right edge of display
-		_cp437; // If set, use correct CP437 charset (default is off)
-	static GFXfont* gfxFont; //adafruit custom font
+  const int16_t
+    WIDTH, HEIGHT;   // This is the 'raw' display w/h - never changes
+  int16_t
+    _width, _height; // Display w/h as modified by current rotation
+  static int16_t cursorX, cursorY;
+  static union ColorUnion {
+    Color c;
+    struct {
+      uint8_t iu;
+      uint8_t i;
+    };
+  } color;
+  static union BgcolorUnion {
+    Color c;
+    struct {
+      uint8_t iu;
+      uint8_t i;
+    };
+  } bgcolor;
+  static uint8_t
+    fontSize,
+    rotation;
+  static bool
+    textWrap,   // If set, 'wrap' text at right edge of display
+    _cp437; // If set, use correct CP437 charset (default is off)
+  static GFXfont* gfxFont; //adafruit custom font
 
-	static uint8_t* font; //gamebuino legacy font
-	static uint8_t fontWidth, fontHeight; //gamebuino legacy font size
+  static uint8_t* font; //gamebuino legacy font
+  static uint8_t fontWidth, fontHeight; //gamebuino legacy font size
 };
 
 } // namespace Gamebuino_Meta
