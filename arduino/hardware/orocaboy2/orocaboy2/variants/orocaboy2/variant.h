@@ -30,6 +30,7 @@ bool     buttonGetPressed(uint8_t ch);
 bool     buttonGetPressedEvent(uint8_t ch);
 uint32_t buttonGetPressedTime(uint8_t ch);
 bool     buttonGetReleased(uint8_t ch);
+bool     buttonGetReleasedEvent(uint8_t ch);
 
 #ifdef __cplusplus
 }

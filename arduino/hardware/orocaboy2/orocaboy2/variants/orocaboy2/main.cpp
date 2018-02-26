@@ -26,6 +26,7 @@ int main_boy(void)
     if (buttonGetPressed(0) == true && buttonGetPressedTime(0) > 50)
     {
       while(buttonGetPressed(0));
+      buttonGetReleasedEvent(0);
       break;
     } 
   }

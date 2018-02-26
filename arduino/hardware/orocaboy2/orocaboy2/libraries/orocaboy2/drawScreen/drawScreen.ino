@@ -13,10 +13,7 @@ void setup() {
   animation.setTransparentColor(ColorIndex::blue);
   animation.setFrame(0);  
 }
-extern "C" 
-{
-  void ledOn(uint8_t ch);
-}
+
 void loop() {
   // put your main code here, to run repeatedly:
   static int cnt;
