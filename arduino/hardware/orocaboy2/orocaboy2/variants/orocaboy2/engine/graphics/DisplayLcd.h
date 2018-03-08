@@ -30,9 +30,12 @@ public:
 	void  fillRect(int16_t x, int16_t y, int16_t w, int16_t h);
 	void  setRotation(uint8_t r);
 	void  invertDisplay(boolean i);
+	void  setScanline(bool enable);
 
 	ColorMode colorMode = ColorMode::rgb565;
 
+private:
+	bool scanline_enable;
 };
 
 } // namespace Gamebuino_Meta
