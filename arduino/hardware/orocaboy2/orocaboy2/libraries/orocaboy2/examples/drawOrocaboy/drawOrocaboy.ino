@@ -281,11 +281,11 @@ void moveOrocaboy()
   boy_x = constrain(boy_x, MIN_X, MAX_X);
   boy_y = constrain(boy_y, MIN_Y, MAX_Y);
 
-  drawImg(frame_delay_cnt, boy_x, boy_y, orocaboy, 50, 50);
+  drawImg(frame_num, boy_x, boy_y, orocaboy, 50, 50);
 
   if (frame_delay_cnt%5 == 0)
   {
-    frame_delay_cnt = (frame_delay_cnt + 1);
+    frame_num = (frame_num + 1);
   }
 
   frame_delay_cnt++;
