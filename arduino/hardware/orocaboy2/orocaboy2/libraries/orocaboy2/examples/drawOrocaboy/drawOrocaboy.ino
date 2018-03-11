@@ -283,12 +283,12 @@ void moveOrocaboy()
 
   drawImg(frame_delay_cnt, boy_x, boy_y, orocaboy, 50, 50);
 
-  if (delay_cnt%5 == 0)
+  if (frame_delay_cnt%5 == 0)
   {
     frame_delay_cnt = (frame_delay_cnt + 1);
   }
 
-  delay_cnt++;
+  frame_delay_cnt++;
 }
 
 
