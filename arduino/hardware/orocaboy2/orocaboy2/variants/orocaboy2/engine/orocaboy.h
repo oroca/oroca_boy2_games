@@ -33,6 +33,7 @@ Authors:
 #include "graphics/Graphics.h"
 #include "graphics/Image.h"
 #include "buttons/Buttons.h"
+#include "touch/Touch.h"
 
 
 
@@ -45,6 +46,7 @@ namespace Gamebuino_Meta {
 class Gamebuino {
 public:
   Buttons buttons;
+  Touch   touch;
 
 	Image display = DISPLAY_CONSTRUCTOR;
 	DisplayLcd tft = DisplayLcd();
