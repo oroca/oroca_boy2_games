@@ -78,14 +78,14 @@ void drawGameBackgroundImage()
 void drawGrid()
 {
   setColor(BLACK);
-  for (int row = 1; row < gb.display.height()/50; row++)
+  for (int row = 1; row < gb.display.height()/24; row++)
   {
-    drawLine(0, (50*row)-20, gb.display.width(), (50*row)-20);
+    drawLine(0, (24*row)-20, gb.display.width(), (24*row)-20);
   }
 
-  for (int col = 1; col < gb.display.width()/50; col++)
+  for (int col = 1; col < gb.display.width()/24; col++)
   {
-    drawLine(50*col, 30, 50*col, gb.display.height());
+    drawLine(24*col, 30, 24*col, gb.display.height());
   }    
 }
 
@@ -232,7 +232,7 @@ void getBtnSignal(int16_t x, int16_t y)
 
 bool grabButton(Button button)
 {
-  return gb.buttons.repeat(button,  1);
+  return gb.buttons.pressed(button);
 }
 
 void beginOrocaboy(ColorIndex background_color, uint16_t first_frame_num)
@@ -244,10 +244,10 @@ void beginOrocaboy(ColorIndex background_color, uint16_t first_frame_num)
 void moveOrocaboy()
 {
   const int16_t MIN_X = 0;
-  const int16_t MAX_X = 50 * (gb.display.width()/50 - 1);
+  const int16_t MAX_X = 24 * (gb.display.width()/24 - 1);
 
   const int16_t MIN_Y = 30;
-  const int16_t MAX_Y = 50 * (gb.display.height()/50 - 1) - 20;
+  const int16_t MAX_Y = 24 * (gb.display.height()/24 - 1) - 20;
 
   static uint16_t frame_num = 0; 
   static int16_t boy_x = 0;
@@ -257,19 +257,19 @@ void moveOrocaboy()
 
   if (grabButton(Button::right))
   {
-    boy_x += 50;
+    boy_x += 24;
   }
   if (grabButton(Button::left))
   {
-    boy_x -= 50;
+    boy_x -= 24;
   }
   if (grabButton(Button::up))
   {
-    boy_y -= 50;
+    boy_y -= 24;
   }
   if (grabButton(Button::down))
   {
-    boy_y += 50;
+    boy_y += 24;
   }
 
   if (grabButton(Button::a))
@@ -281,7 +281,7 @@ void moveOrocaboy()
   boy_x = constrain(boy_x, MIN_X, MAX_X);
   boy_y = constrain(boy_y, MIN_Y, MAX_Y);
 
-  drawImg(frame_num, boy_x, boy_y, orocaboy, 50, 50);
+  drawImg(frame_num, boy_x, boy_y, orocaboy, 24, 24);
 
   if (frame_delay_cnt%5 == 0)
   {
