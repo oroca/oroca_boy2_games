@@ -21,7 +21,7 @@ enum class Color : uint16_t {
 	black		= 0x0000,
 	purple		= 0x8010,
 	pink		= 0xFE19,
-	red		= 0xF800,
+	red			= 0xF800,
 	orange		= 0xFD20,
 	brown		= 0xA145,
 	beige		= 0xF7BB,

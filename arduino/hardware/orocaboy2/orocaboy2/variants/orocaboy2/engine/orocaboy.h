@@ -56,7 +56,7 @@ public:
 	void begin();
 	void startScreen();
 	void titleScreen();
-	bool update();
+	bool update(bool draw_enable = true);
 	void updateDisplay();
 	uint8_t startMenuTimer;
 	uint32_t frameCount;
