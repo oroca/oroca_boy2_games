@@ -27,7 +27,7 @@ Authors:
 #include "hw.h"
 
 namespace Gamebuino_Meta {
-const uint8_t NUM_BTN = 8;
+const uint8_t NUM_BTN = 10;
 const uint8_t BTN_CS = 25;
 
 enum class Button : uint8_t {
@@ -39,6 +39,8 @@ enum class Button : uint8_t {
 	b,
 	menu,
 	home,
+	c,
+	d,
 };
 
 class Buttons {
