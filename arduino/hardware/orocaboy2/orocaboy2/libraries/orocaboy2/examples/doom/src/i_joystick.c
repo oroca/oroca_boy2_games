@@ -240,16 +240,16 @@ void I_InitJoystick(void)
 
     joybfire   = _HW_DEF_BUTTON_A;
     joybstrafe = -1;
-    joybuse    = _HW_DEF_BUTTON_C;
+    joybuse    = _HW_DEF_BUTTON_B;
     joybspeed  = _HW_DEF_BUTTON_D;
-    joybjump   = _HW_DEF_BUTTON_B;
+    joybjump   = -1;
 
     joybstrafeleft = -1;
     joybstraferight = -1;
     joybprevweapon = -1;
     joybnextweapon = _HW_DEF_BUTTON_HOME;
     joybmenu    = _HW_DEF_BUTTON_MENU;
-    joybautomap = -1;
+    joybautomap = _HW_DEF_BUTTON_C;
 
 }
 
