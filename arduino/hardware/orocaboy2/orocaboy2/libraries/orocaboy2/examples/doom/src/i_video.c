@@ -918,7 +918,8 @@ void I_FinishUpdate (void)
         line_buf[x_index++] = rgb565;
       }
 
-      drvLcdCopyLineBuffer((uint16_t)(x_offset), (uint16_t)(y_offset + y*2), (uint8_t *)line_buf, SCREENWIDTH*2);
+      drvLcdCopyLineBuffer((uint16_t)(x_offset), (uint16_t)(y_offset + y*2 + 0), (uint8_t *)line_buf, SCREENWIDTH*2);
+      drvLcdCopyLineBuffer((uint16_t)(x_offset), (uint16_t)(y_offset + y*2 + 1), (uint8_t *)line_buf, SCREENWIDTH*2);
     }
     lcdRequestDraw();
 #endif
