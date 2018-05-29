@@ -95,8 +95,8 @@ static int snd_mport = 0;
 
 static sound_module_t *sound_modules[] = 
 {
-#ifdef FEATURE_SOUND
     &sound_sdl_module,
+#ifdef FEATURE_SOUND
     &sound_pcsound_module,
 #endif
     NULL,

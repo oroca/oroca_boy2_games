@@ -28,7 +28,7 @@
 #define SCREENHEIGHT 200
 
 // Screen height used when aspect_ratio_correct=true.
-
+#define SCREENWIDTH_4_3  400
 #define SCREENHEIGHT_4_3 240
 
 typedef boolean (*grabmouse_callback_t)(void);

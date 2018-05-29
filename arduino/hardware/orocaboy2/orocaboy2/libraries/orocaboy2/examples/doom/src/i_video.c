@@ -13,7 +13,7 @@
 // GNU General Public License for more details.
 //
 // DESCRIPTION:
-//	DOOM graphics stuff for SDL.
+//  DOOM graphics stuff for SDL.
 //
 
 #ifdef ORIGCODE
@@ -151,7 +151,8 @@ int window_height = SCREENHEIGHT_4_3 * 2;
 
 // Fullscreen mode, 0x0 for SDL_WINDOW_FULLSCREEN_DESKTOP.
 
-int fullscreen_width = 0, fullscreen_height = 0;
+int fullscreen_width  = 384;
+int fullscreen_height = 240;
 
 // Maximum number of pixels to use for intermediate scale buffer.
 
@@ -159,7 +160,7 @@ static int max_scaling_buffer_pixels = 16000000;
 
 // Run in full screen mode?  (int type for config code)
 
-int fullscreen = true;
+int fullscreen = false;
 
 // Aspect ratio correction mode
 
@@ -234,6 +235,11 @@ int usegamma = 0;
 
 // Joystick/gamepad hysteresis
 unsigned int joywait = 0;
+
+
+extern void drvLcdCopyLineBuffer(uint16_t x_pos, uint16_t y_pos, uint8_t *p_data, uint32_t length);
+extern void drvLcdBufferClear(uint32_t rgb_code);
+
 
 static boolean MouseShouldBeGrabbed()
 {
@@ -447,6 +453,57 @@ static void I_ToggleFullScreen(void)
 }
 #endif
 
+void touchProcess(void)
+{
+  static uint32_t pre_time;
+  static uint8_t state = 0;
+
+  switch(state)
+  {
+    case 0:
+      if (tsIsDetected() == 2)
+      {
+        state = 1;
+        pre_time = millis();
+      }
+      break;
+
+    case 1:
+      if (millis()-pre_time > 100)
+      {
+        state = 2;
+        pre_time = millis();
+      }
+      if (tsIsDetected() < 2)
+      {
+        state = 0;
+      }
+      break;
+
+    case 2:
+      if (fullscreen == true)
+      {
+        fullscreen = false;
+        drvLcdBufferClear(0x00);
+      }
+      else
+      {
+        fullscreen = true;
+      }
+      state = 10;
+      break;
+
+    case 10:
+      if (tsIsDetected() == 0)
+      {
+        state = 0;
+      }
+      break;
+
+  }
+}
+
+
 void I_GetEvent(void)
 {
 #ifdef ORIGCODE
@@ -469,7 +526,7 @@ void I_GetEvent(void)
                 // deliberate fall-though
 
             case SDL_KEYUP:
-		I_HandleKeyboardEvent(&sdlevent);
+    I_HandleKeyboardEvent(&sdlevent);
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
@@ -506,6 +563,8 @@ void I_GetEvent(void)
         }
     }
 #endif
+
+    touchProcess();
 }
 
 //
@@ -732,8 +791,195 @@ static void CreateUpscaledTexture(boolean force)
 #endif
 }
 
-extern void drvLcdCopyLineBuffer(uint16_t x_pos, uint16_t y_pos, uint8_t *p_data, uint32_t length);
 
+
+#if 0
+void drvLcdCopyLineBuffer(uint16_t x_pos, uint16_t y_pos, uint8_t *p_dst, uint32_t length)
+{
+  uint32_t PixelFormat;
+  uint32_t dst_addr;
+
+  dst_addr = (uint32_t)lcd_layer.p_buffer[lcd_layer.buffer_index] + 2*y_pos*drvLcdGetWidth() + x_pos;
+
+
+  PixelFormat = LTDC_PIXEL_FORMAT_RGB565;
+  DMA2D->CR      = 0x00000000UL | (1 << 9) | (0x2 << 16);
+
+  /* Set up pointers */
+  DMA2D->FGMAR   = (uint32_t)p_data;
+  DMA2D->OMAR    = (uint32_t)dst_addr;
+  DMA2D->BGMAR   = 0;
+  DMA2D->FGOR    = 0;
+  DMA2D->OOR     = 0;
+  DMA2D->BGOR    = 0;
+
+  /* Set up pixel format */
+  DMA2D->FGPFCCR = LTDC_PIXEL_FORMAT_RGB565;
+  DMA2D->BGPFCCR = PixelFormat;
+  DMA2D->OPFCCR  = PixelFormat;
+
+  /*  Set up size */
+  DMA2D->NLR     = (uint32_t)(length << 16) | (uint32_t)1;
+
+
+  DMA2D->CR     |= DMA2D_CR_START;
+
+  /* Wait until transfer is done */
+  while (DMA2D->CR & DMA2D_CR_START)
+  {
+  }
+}
+#endif
+
+uint8_t fullscreen_buffer[400*240];
+
+
+static void resizePixels(uint8_t *p_in, uint8_t *p_out,int w1,int h1,int w2,int h2)
+{
+  // EDIT: added +1 to account for an early rounding problem
+  int x_ratio = (int)((w1<<16)/w2) +1;
+  int y_ratio = (int)((h1<<16)/h2) +1;
+  int x2, y2 ;
+
+  for (int i=0;i<h2;i++)
+  {
+    for (int j=0;j<w2;j++)
+    {
+      x2 = ((j*x_ratio)>>16) ;
+      y2 = ((i*y_ratio)>>16) ;
+      p_out[(i*w2)+j] = p_in[(y2*w1)+x2] ;
+    }
+  }
+}
+
+/*
+static void resizeBilinearPixels(uint8_t *p_in, uint8_t *p_out, int w, int h, int w2, int h2)
+{
+  int A, B, C, D, x, y, index, gray ;
+  float x_ratio = ((float)(w-1))/w2 ;
+  float y_ratio = ((float)(h-1))/h2 ;
+  float x_diff, y_diff, ya, yb ;
+  int offset = 0 ;
+
+  for (int i=0;i<h2;i++)
+  {
+    for (int j=0;j<w2;j++)
+    {
+      x = (int)(x_ratio * j) ;
+      y = (int)(y_ratio * i) ;
+      x_diff = (x_ratio * j) - x ;
+      y_diff = (y_ratio * i) - y ;
+      index = y*w+x ;
+
+      // range is 0 to 255 thus bitwise AND with 0xff
+      A = p_in[index] & 0xff ;
+      B = p_in[index+1] & 0xff ;
+      C = p_in[index+w] & 0xff ;
+      D = p_in[index+w+1] & 0xff ;
+
+      // Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
+      gray = (int)(
+          A*(1-x_diff)*(1-y_diff) +  B*(x_diff)*(1-y_diff) +
+          C*(y_diff)*(1-x_diff)   +  D*(x_diff*y_diff)
+      ) ;
+
+      if (gray > 255) gray = 255;
+
+      p_out[offset++] = gray ;
+    }
+  }
+}
+*/
+
+
+static void drawScreenNormal(void)
+{
+  int x, y;
+  byte index;
+  uint16_t rgb565;
+
+  if (lcdDrawAvailable() == false)
+  {
+    return;
+  }
+
+  int x_offset;
+  int y_offset;
+
+  x_offset = 800 - (SCREENWIDTH*2);
+  y_offset = 480 - (SCREENHEIGHT*2);
+  x_offset /= 1;
+  y_offset /= 2;
+
+
+  uint16_t  line_buf[SCREENWIDTH*2];
+
+
+  uint16_t x_index;
+  for (y = 0; y < SCREENHEIGHT; y++)
+  {
+    x_index = 0;
+    for (x = 0; x < SCREENWIDTH; x++)
+    {
+      index  = I_VideoBuffer[y * SCREENWIDTH + x];
+      rgb565 = rgb565_palette[index];
+
+      line_buf[x_index++] = rgb565;
+      line_buf[x_index++] = rgb565;
+    }
+
+    drvLcdCopyLineBuffer((uint16_t)(x_offset), (uint16_t)(y_offset + y*2 + 0), (uint8_t *)line_buf, SCREENWIDTH*2);
+    drvLcdCopyLineBuffer((uint16_t)(x_offset), (uint16_t)(y_offset + y*2 + 1), (uint8_t *)line_buf, SCREENWIDTH*2);
+  }
+  lcdRequestDraw();
+}
+
+static void drawScreenFull(void)
+{
+  int x, y;
+  byte index;
+  uint16_t rgb565;
+
+  if (lcdDrawAvailable() == false)
+  {
+    return;
+  }
+
+  int x_offset;
+  int y_offset;
+
+  x_offset = 800 - (SCREENWIDTH_4_3*2);
+  y_offset = 480 - (SCREENHEIGHT_4_3*2);
+  x_offset /= 1;
+  y_offset /= 1;
+
+
+
+
+  resizePixels(I_VideoBuffer, fullscreen_buffer, 320, 200, SCREENWIDTH_4_3, SCREENHEIGHT_4_3);
+
+
+  uint16_t  line_buf[SCREENWIDTH_4_3*2];
+
+
+  uint16_t x_index;
+  for (y = 0; y < SCREENHEIGHT_4_3; y++)
+  {
+    x_index = 0;
+    for (x = 0; x < SCREENWIDTH_4_3; x++)
+    {
+      index  = fullscreen_buffer[y * SCREENWIDTH_4_3 + x];
+      rgb565 = rgb565_palette[index];
+
+      line_buf[x_index++] = rgb565;
+      line_buf[x_index++] = rgb565;
+    }
+
+    drvLcdCopyLineBuffer((uint16_t)(x_offset), (uint16_t)(y_offset + y*2 + 0), (uint8_t *)line_buf, SCREENWIDTH_4_3*2);
+    drvLcdCopyLineBuffer((uint16_t)(x_offset), (uint16_t)(y_offset + y*2 + 1), (uint8_t *)line_buf, SCREENWIDTH_4_3*2);
+  }
+  lcdRequestDraw();
+}
 
 //
 // I_FinishUpdate
@@ -793,15 +1039,15 @@ void I_FinishUpdate (void)
 
     if (display_fps_dots)
     {
-	i = I_GetTime();
-	tics = i - lasttic;
-	lasttic = i;
-	if (tics > 20) tics = 20;
+  i = I_GetTime();
+  tics = i - lasttic;
+  lasttic = i;
+  if (tics > 20) tics = 20;
 
-	for (i=0 ; i<tics*4 ; i+=4)
-	    I_VideoBuffer[ (SCREENHEIGHT-1)*SCREENWIDTH + i] = 0xff;
-	for ( ; i<20*4 ; i+=4)
-	    I_VideoBuffer[ (SCREENHEIGHT-1)*SCREENWIDTH + i] = 0x0;
+  for (i=0 ; i<tics*4 ; i+=4)
+      I_VideoBuffer[ (SCREENHEIGHT-1)*SCREENWIDTH + i] = 0xff;
+  for ( ; i<20*4 ; i+=4)
+      I_VideoBuffer[ (SCREENHEIGHT-1)*SCREENWIDTH + i] = 0x0;
     }
 
     // Draw disk icon before blit, if necessary.
@@ -884,45 +1130,18 @@ void I_FinishUpdate (void)
     }
     lcdRequestDraw();
 #else
-    int x, y;
-    byte index;
-    uint16_t rgb565;
 
-    if (lcdDrawAvailable() == false)
+
+    if (fullscreen == true)
     {
-      return;
+      drawScreenFull();
+    }
+    else
+    {
+      drawScreenNormal();
     }
 
-    int x_offset;
-    int y_offset;
 
-    x_offset = 800 - (SCREENWIDTH*2);
-    y_offset = 480 - (SCREENHEIGHT*2);
-    x_offset /= 1;
-    y_offset /= 2;
-
-
-    uint16_t  line_buf[SCREENWIDTH*2];
-
-
-    uint16_t x_index;
-    for (y = 0; y < SCREENHEIGHT; y++)
-    {
-      x_index = 0;
-      for (x = 0; x < SCREENWIDTH; x++)
-      {
-        index  = I_VideoBuffer[y * SCREENWIDTH + x];
-        rgb565 = rgb565_palette[index];
-
-        line_buf[x_index++] = rgb565;
-        line_buf[x_index++] = rgb565;
-      }
-
-      drvLcdCopyLineBuffer((uint16_t)(x_offset), (uint16_t)(y_offset + y*2 + 0), (uint8_t *)line_buf, SCREENWIDTH*2);
-      drvLcdCopyLineBuffer((uint16_t)(x_offset), (uint16_t)(y_offset + y*2 + 1), (uint8_t *)line_buf, SCREENWIDTH*2);
-    }
-    lcdRequestDraw();
-#endif
 
     static uint32_t pre_time;
     uint32_t time_process;
@@ -938,7 +1157,9 @@ void I_FinishUpdate (void)
     pre_time = millis();
 
 #endif
+#endif
 }
+
 
 
 //
@@ -1415,7 +1636,7 @@ static void SetVideoMode(void)
     // The SDL_RENDERER_TARGETTEXTURE flag is required to render the
     // intermediate texture into the upscaled texture.
     renderer_flags = SDL_RENDERER_TARGETTEXTURE;
-	
+
     if (SDL_GetCurrentDisplayMode(video_display, &mode) != 0)
     {
         I_Error("Could not get display mode for video display #%d: %s",
