@@ -28,9 +28,21 @@ extern int __io_getchar(void) __attribute__((weak));
   register char * stack_ptr asm("sp");
 #endif
 
+extern void vcpPutch(uint8_t ch);
+extern uint8_t vcpGetch(void);
 
+int __io_putchar(int ch)
+{
+  vcpPutch(ch);
 
+  return 0;
+}
+int __io_getchar(void)
+{
+  return vcpGetch();
+}
 
+#if 1
 caddr_t _sbrk(int incr)
 {
   extern char end asm("end");
@@ -63,7 +75,39 @@ caddr_t _sbrk(int incr)
 
   return (caddr_t) prev_heap_end;
 }
+#else
 
+static char heap[0x00700000]; // 7M
+
+/* pointer to current position in heap */
+static char* _cur_brk = heap;
+
+
+caddr_t _sbrk(int incr)
+{
+	char* _old_brk = _cur_brk;
+
+	if ((_cur_brk + incr) > (heap + 0x00700000))
+	{
+		uint8_t i;
+
+		char* msg = "HEAP FULL!\r\n";
+
+		for (i = 0; i < strlen(msg); i++)
+		{
+			__io_putchar (msg[i]);
+		}
+
+		errno = ENOMEM;
+		return (void *)-1;
+	}
+
+	_cur_brk += incr;
+
+  printf("sbrk %d %d\n", _cur_brk, incr);
+	return (caddr_t)_old_brk;
+}
+#endif
 /*
  * _gettimeofday primitive (Stub function)
  * */

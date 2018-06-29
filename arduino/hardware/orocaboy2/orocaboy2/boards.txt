@@ -9,11 +9,13 @@ menu.upload_method=Upload method
 OROCABOY2_Boot.bootloader.tool = orocaboy2_boot
 OROCABOY2_Boot.bootloader.file = 
 OROCABOY2_Boot.name=OROCABOY2 Boot
+OROCABOY2_Boot.build.board=OROCABOY2_Boot
 OROCABOY2_Boot.upload.maximum_size=523264
 
 OROCABOY2_App.bootloader.tool = orocaboy2_app
 OROCABOY2_App.bootloader.file = 
 OROCABOY2_App.name=OROCABOY2 App
+OROCABOY2_App.build.board=OROCABOY2_App
 OROCABOY2_App.upload.maximum_size=523264
 
 

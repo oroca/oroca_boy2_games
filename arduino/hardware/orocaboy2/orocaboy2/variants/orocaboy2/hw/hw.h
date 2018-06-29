@@ -15,6 +15,7 @@
 
 
 #include "def.h"
+#include "hw_def.h"
 
 
 #define PI              3.1415926535897932384626433832795
