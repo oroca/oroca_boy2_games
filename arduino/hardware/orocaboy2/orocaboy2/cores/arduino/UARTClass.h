@@ -44,7 +44,6 @@ class UARTClass : public HardwareSerial
     UARTClass(void);
     UARTClass(uint8_t ch);
 
-    void begin(uint8_t ch, uint8_t baud);
     void begin(uint32_t baud);
     void end(void);
     int available(void);
@@ -68,7 +67,7 @@ class UARTClass : public HardwareSerial
 };
 
 extern UARTClass Serial;
-extern UARTClass SerialBLE;
-extern UARTClass SerialUART;
+extern UARTClass Serial1;
+
 
 #endif // _UART_CLASS_

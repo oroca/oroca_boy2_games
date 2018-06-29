@@ -21,6 +21,16 @@
 #include <string.h>
 #include "UARTClass.h"
 
+extern "C"
+{
+extern err_code_t  uartOpen(uint8_t channel, uint32_t baud);
+extern err_code_t  uartClose(uint8_t channel);
+extern uint32_t    uartAvailable(uint8_t channel);
+extern void        uartFlush(uint8_t channel);
+extern int32_t     uartWrite(uint8_t channel, uint8_t *p_data, uint32_t length);
+extern uint8_t     uartRead(uint8_t channel);
+extern void        uartPutch(uint8_t channel, uint8_t ch);
+}
 
 // Constructors ////////////////////////////////////////////////////////////////
 UARTClass::UARTClass(uint8_t ch){
@@ -31,30 +41,20 @@ UARTClass::UARTClass(void){
 _uart_ch = 0;
 }
 
-void UARTClass::begin(uint8_t ch, uint8_t baud)
-{  
-  _uart_baud = baud;
-
-  //p_arduino_cmd->write_value(_DEF_CH_BOARD, _DEF_ID_BOARD, P_REMOTE_SERIAL_PORT, (uint8_t *)&_uart_ch, 1);
-}
-
 void UARTClass::begin(uint32_t baud)
 {
-  //begin(_uart_ch, baud);
+  _uart_baud = baud;
+
+  uartOpen(_uart_ch, baud);
 }
 
 void UARTClass::end( void )
-{
-  
+{ 
 }
 
 int UARTClass::available( void )
 {
-  uint8_t length = 0;
-
-  //p_arduino_cmd->read_value(_DEF_CH_BOARD, _DEF_ID_BOARD, P_REMOTE_SERIAL_AVAILABLE, (uint8_t *)&length, 1);
-
-  return length;
+  return uartAvailable(_uart_ch);
 }
 
 int UARTClass::availableForWrite(void)
@@ -68,24 +68,18 @@ int UARTClass::peek( void )
 }
 
 int UARTClass::read( void )
-{
-  uint8_t data = 0;
-
-  //p_arduino_cmd->read_value(_DEF_CH_BOARD, _DEF_ID_BOARD, P_REMOTE_SERIAL_READ, (uint8_t *)&data, 1);
-  
-  return data;
+{  
+  return uartRead(_uart_ch);
 }
 
 void UARTClass::flush( void )
 {
-  
+  uartFlush(_uart_ch);
 }
 
 size_t UARTClass::write( const uint8_t uc_data )
 {
-
-  //p_arduino_cmd->write_value(_DEF_CH_BOARD, _DEF_ID_BOARD, P_REMOTE_SERIAL_WRITE, (uint8_t *)&uc_data, 1);  
-
+  uartPutch(_uart_ch, uc_data);
   return 1;
 }
 
@@ -97,3 +91,4 @@ uint32_t UARTClass::getBaudRate( void )
 
 
 UARTClass Serial(0);
+UARTClass Serial1(1);
